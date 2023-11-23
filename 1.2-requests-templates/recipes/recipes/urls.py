@@ -16,6 +16,13 @@ Including another URLconf
 
 from django.urls import path
 
+from django.contrib import admin
+from calculator.views import home_view, dish_recipe
+
 urlpatterns = [
-    # здесь зарегистрируйте вашу view-функцию
+    path('', home_view, name='home'),
+    path('<dish>/', dish_recipe, name='dish'),
+    # path('pasta/', pasta_recipe, name='pasta'),
+    # path('buter/', buter_recipe, name='buter')
+    path('admin/', admin.site.urls),
 ]
