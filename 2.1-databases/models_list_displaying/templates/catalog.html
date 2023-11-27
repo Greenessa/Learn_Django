@@ -13,7 +13,7 @@
     <div class="content">
       {% for book in books %}
         <div class="book">
-          <a href="{% url 'book' %}">
+          <a href="{% url 'book_detail' %}">
             <h3>{{ book.name }}</h3>
           </a>
           <div class="author">Автор: {{ book.author }} </div>

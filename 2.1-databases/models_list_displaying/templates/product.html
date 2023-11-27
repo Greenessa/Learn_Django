@@ -17,11 +17,11 @@
     <div>Автор: {{ book.author }} </div>
     <div>Дата публикации: {{ book.pub_date }}</div>
   </div>
-        {% if page.has_previous %}
-            <a class="button button-primary" href="?page={{ page.previous_page_number }}">⟵</a>
-        {% endif %}
-        <a class="button disabled" href="">{{ page.number }}</a>
-        {% if page.has_next %}
-            <a class="button button-primary" href="?page={{ page.next_page_number }}">⟶</a>
-        {% endif %}
+      {% if previous_page %}
+        <a href="?page={{ previous_page.pub_date|date:'Y-m-d' }}">⟵</a>
+      {% endif %}
+      {% if next_page %}
+        <a href="?page={{ next_page.pub_date|date:'Y-m-d' }}">⟶</a>
+      {% endif %}
 {% endblock %}
+

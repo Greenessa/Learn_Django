@@ -15,23 +15,11 @@ def books_view(request):
     context = {'books': b}
     return render(request, template, context)
 
-# def book_view(request):
-#     template = ''
-#     b = list(Book.objects.all())
-#     paginator = Paginator(b, 1)
-#     page_number = int(request.GET.get('page', 1))
-#     page = paginator.get_page(page_number)
-#     context = {
-#         'book': page.object_list,
-#         'page': page,
-#     }
-#     return render(request, 'stations/index.html', context)
-def book_view(request, pub_date: datetime):
+
+def book_view_detail(request, pub_date: datetime):
     template = 'product.html'
-    #book = Book.objects.filter(pub_date__contains=pub_date).first()
-    b = list(Book.objects.all())
-    paginator = Paginator(b, 1)
-    page_number = request.GET.get('page')
-    page = paginator.get_page(page_number)
-    context = {'book': page.object_list}
+    book = Book.objects.filter(pub_date=pub_date)
+    previous_page = Book.objects.filter(pub_date__lt=pub_date).order_by('-pub_date').first()
+    next_page = Book.objects.filter(pub_date__gt=pub_date).order_by('pub_date').first()
+    context = {'book': book, 'previous_page': previous_page, 'next_page': next_page}
     return render(request, template, context)
