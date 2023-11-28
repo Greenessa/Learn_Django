@@ -6,22 +6,25 @@
 
 {% block content %}
   <div class="container">
-  <div class="header">
-    <h5>
-      <a href="{% url 'books' %}">Вернуться в каталог</a>
-    </h5>
-    <h1>{{ book.name }}</h1>
+      <div class="header">
+        <h5>
+          <a href="{% url 'books' %}">Вернуться в каталог</a>
+        </h5>
+      </div>
+        <div class="row">
+            {% if next_page %}
+            <a href="{{ next_page.pud_date|date:'Y-m-d' }}">{{ next_page.pud_date|date:'Y-m-d' }}</a>
+            {% endif %}
+                {% for book in book %}
+                  <div class="book">
+                      <h3>{{ book.name }}</h3>
+                    <div class="author">Автор: {{ book.author }} </div>
+                    <div class="pub_date">Дата публикации: {{ book.pub_date }} </div>
+                  </div>
+                {% endfor %}
+            {% if previous_page %}
+            <a href="{{ previous_page.pud_date|date:'Y-m-d' }}">{{ previous_page.pud_date|date:'Y-m-d' }}</a>
+            {% endif %}
+        </div>
   </div>
-
-  <div class="content">
-    <div>Автор: {{ book.author }} </div>
-    <div>Дата публикации: {{ book.pub_date }}</div>
-  </div>
-      {% if previous_page %}
-        <a href="?page={{ previous_page.pub_date|date:'Y-m-d' }}">⟵</a>
-      {% endif %}
-      {% if next_page %}
-        <a href="?page={{ next_page.pub_date|date:'Y-m-d' }}">⟶</a>
-      {% endif %}
 {% endblock %}
-

@@ -24,3 +24,4 @@ urlpatterns = [
     path('books/<date:pub_date>/', book_view_detail, name='book_detail'),
     path('admin/', admin.site.urls),
 ]
+
