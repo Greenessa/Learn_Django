@@ -13,17 +13,17 @@
       </div>
         <div class="row">
             {% if next_page %}
-            <a href="{{ next_page.pud_date|date:'Y-m-d' }}">{{ next_page.pud_date|date:'Y-m-d' }}</a>
+            <a href="{{ next_page.pub_date|date:'Y-m-d' }}">{{ next_page.pub_date|date:'Y-m-d' }}</a>
             {% endif %}
-                {% for book in book %}
-                  <div class="book">
-                      <h3>{{ book.name }}</h3>
-                    <div class="author">Автор: {{ book.author }} </div>
-                    <div class="pub_date">Дата публикации: {{ book.pub_date }} </div>
-                  </div>
-                {% endfor %}
+            {% for book in book %}
+              <div class="book">
+                  <h3>{{ book.name }}</h3>
+                <div class="author">Автор: {{ book.author }} </div>
+                <div class="pub_date">Дата публикации: {{ book.pub_date }} </div>
+              </div>
+            {% endfor %}
             {% if previous_page %}
-            <a href="{{ previous_page.pud_date|date:'Y-m-d' }}">{{ previous_page.pud_date|date:'Y-m-d' }}</a>
+            <a href="{{ previous_page.pub_date|date:'Y-m-d' }}">{{ previous_page.pub_date|date:'Y-m-d' }}</a>
             {% endif %}
         </div>
   </div>
