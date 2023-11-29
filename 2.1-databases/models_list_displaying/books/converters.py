@@ -12,4 +12,4 @@ class DateConverter:
    def to_url(self, value: datetime) -> str:
        return value.strftime(self.format)
 
-register_converter(DateConverter, 'date')
+#register_converter(DateConverter, 'date')

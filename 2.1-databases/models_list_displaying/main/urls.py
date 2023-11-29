@@ -15,9 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls import register_converter
 
+
+from books.converters import DateConverter
 from books.views import books_view, books_view_index, book_view_detail
 
+register_converter(DateConverter, 'date')
 urlpatterns = [
     path('', books_view_index),
     path('books/', books_view, name='books'),
