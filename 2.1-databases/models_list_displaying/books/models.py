@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from django.db import models
-
+from django.urls import reverse
 
 class Book(models.Model):
     name = models.CharField(u'Название', max_length=64)
@@ -10,3 +10,6 @@ class Book(models.Model):
 
     def __str__(self):
         return self.name + " " + self.author
+
+    def get_absolute_url(self):
+        return reverse('book_detail', kwargs={'pub_date': self.pub_date})

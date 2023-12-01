@@ -13,7 +13,7 @@
       </div>
         <div class="row">
             {% if previous_page %}
-            <a href="{{ previous_page.pub_date|date:'Y-m-d' }}">{{ previous_page.pub_date|date:'Y-m-d' }}</a>
+            <a href="{{ previous_page.get_absolute_url }}">{{ previous_page.pub_date|date:'Y-m-d' }}</a>
             {% endif %}
             {% for book in book %}
               <div class="book">
@@ -23,7 +23,7 @@
               </div>
             {% endfor %}
             {% if next_page %}
-            <a href="{{ next_page.pub_date|date:'Y-m-d' }}">{{ next_page.pub_date|date:'Y-m-d' }}</a>
+            <a href="{{ next_page.get_absolute_url }}">{{ next_page.pub_date|date:'Y-m-d' }}</a>
             {% endif %}
         </div>
   </div>
