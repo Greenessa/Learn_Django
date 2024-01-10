@@ -1,5 +1,7 @@
-from django.conf import settings
+#from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
+from django_filters import FilterSet, DateFromToRangeFilter, DateTimeFromToRangeFilter
 
 
 class AdvertisementStatusChoices(models.TextChoices):
@@ -7,6 +9,7 @@ class AdvertisementStatusChoices(models.TextChoices):
 
     OPEN = "OPEN", "Открыто"
     CLOSED = "CLOSED", "Закрыто"
+    DRAFT = "DRAFT", "Черновик"
 
 
 class Advertisement(models.Model):
@@ -19,8 +22,8 @@ class Advertisement(models.Model):
         default=AdvertisementStatusChoices.OPEN
     )
     creator = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
+        User,
+        on_delete=models.CASCADE
     )
     created_at = models.DateTimeField(
         auto_now_add=True
@@ -28,3 +31,4 @@ class Advertisement(models.Model):
     updated_at = models.DateTimeField(
         auto_now=True
     )
+    favorite_by = models.ManyToManyField(User, related_name='favorites', blank=True)
