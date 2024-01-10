@@ -31,19 +31,20 @@ class AdvertisementViewSet(ModelViewSet):
     def get_queryset(self):
         us = self.request.user
         queryset = Advertisement.objects.exclude(status="DRAFT")
-        queryset_draft = Advertisement.objects.filter(status="DRAFT")& Advertisement.objects.filter(creator=us)
+        queryset_draft = Advertisement.objects.filter(status="DRAFT", creator=us.id)
         if self.request.user.is_authenticated:
             queryset = queryset | queryset_draft
         return queryset
+
 
     @action(methods=['post'], detail=True, url_path='toggle_favorite')
     def favorite(self, request, *args, **kwargs):
         post=self.get_object()
         user=request.user
-        if user.favorites.filter(id=post.id).exist():
+        if user.favorites.filter(id=post.id).exists():
             user.favorites.remove(post)
         else:
             if post.creator!= user:
                 user.favorites.add(post)
-        return Response({'status': user.favorites.filter(id=post.id).exist()})
+        return Response({'status': user.favorites.filter(id=post.id).exists()})
 
