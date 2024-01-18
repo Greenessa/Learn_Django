@@ -1,0 +1,11 @@
+{
+  "name": "Algebra",
+  "students": [
+    {"name": "Fedorov",
+    "birth_date": "1986-11-12"},
+    {"name": "Ivanov",
+    "birth_date": "1988-12-10"},
+    {"name": "Kaizer",
+    "birth_date": "1995-04-08"}
+  ]
+}
