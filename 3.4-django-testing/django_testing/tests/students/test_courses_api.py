@@ -24,8 +24,8 @@ def client():
 #проверка получения первого курса
 @pytest.mark.django_db
 def test_first_course(client, course_factory, student_factory):
-    courses=course_factory(_quantity=1)
-    students=student_factory(_quantity=3)
+    courses=course_factory(_quantity=1, make_m2m=True)
+    students=student_factory(_quantity=3, make_m2m=True)
     response= client.get('/api/v1/courses/')
     data=response.json()
     assert response.status_code == 200
@@ -38,8 +38,8 @@ def test_first_course(client, course_factory, student_factory):
 def test_list_courses(client, course_factory, student_factory):
     #Arrange
     count = Course.objects.count()
-    courses=course_factory(_quantity=5)
-    students=student_factory(_quantity=10)
+    courses = course_factory(_quantity=5, make_m2m=True)
+    students = student_factory(_quantity=10, make_m2m=True)
     response= client.get('/api/v1/courses/')
     data=response.json()
     assert response.status_code == 200
@@ -51,11 +51,12 @@ def test_list_courses(client, course_factory, student_factory):
 #проверка фильтрации списка курсов по id
 @pytest.mark.django_db
 def test_filter_id_courses(client, course_factory, student_factory):
-    courses = course_factory(_quantity=5)
-    students = student_factory(_quantity=10)
-    response = client.get('/api/v1/courses/?id=1')
+    courses = course_factory(_quantity=5, make_m2m=True)
+    course_id=courses[0].id
+    students = student_factory(_quantity=10, make_m2m=True)
+    response = client.get('/api/v1/courses/', {'id': course_id})
     data = response.json()
-    cour1=Course.objects.filter(id=1)
+    cour1=Course.objects.filter(id=course_id)
     assert response.status_code == 200
     assert data['name']==cour1['name']
 
@@ -66,7 +67,8 @@ def test_create_course(client, course_factory, student_factory):
     # students=student_factory(_quantity=3)
     with open('data.json', encoding="utf-8") as f:
         data=json.load(f)
-    course1=Course.objects.create(name=data['name'])
+    #course1=Course.objects.create(name=data['name'])
+    course1=client.post('/api/v1/courses/', {'name': data['name']})
     for d in data['students']:
         course1.students.create(name=d['name'], birth_date=d['birth_date'])
     response= client.get('/api/v1/courses/')
