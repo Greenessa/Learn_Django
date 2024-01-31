@@ -24,13 +24,13 @@ def client():
 #проверка получения первого курса
 @pytest.mark.django_db
 def test_first_course(client, course_factory, student_factory):
-    courses=course_factory(_quantity=1, make_m2m=True)
-    students=student_factory(_quantity=3, make_m2m=True)
-    response= client.get('/api/v1/courses/')
+    courses=course_factory(_quantity=3, make_m2m=True)
+    course_id = courses[0].id
+    students=student_factory(_quantity=5, make_m2m=True)
+    response = client.get('/api/v1/courses/', {'id': course_id})
     data=response.json()
     assert response.status_code == 200
-    for i, c in enumerate(data):
-        assert c['name']==courses[i].name
+    assert data[0]['name']==courses[0].name
 
 
 #проверка получения списка курсов
@@ -60,17 +60,24 @@ def test_filter_id_courses(client, course_factory, student_factory):
     assert response.status_code == 200
     assert data['name']==cour1['name']
 
+#проверка фильтрации списка курсов по name
+@pytest.mark.django_db
+def test_filter_name_courses(client, course_factory, student_factory):
+    courses = course_factory(_quantity=5, make_m2m=True)
+    course_name=courses[0].name
+    students = student_factory(_quantity=10, make_m2m=True)
+    response = client.get('/api/v1/courses/', {'name': course_name})
+    data = response.json()
+    cour1=Course.objects.filter(name=course_name)
+    assert response.status_code == 200
+    assert data['name']==cour1['name']
+
 #ТЕСТ УСПЕШНОГО СОЗДАНИЯ курса
 @pytest.mark.django_db
 def test_create_course(client, course_factory, student_factory):
-    # courses=course_factory(_quantity=1)
-    # students=student_factory(_quantity=3)
     with open('data.json', encoding="utf-8") as f:
         data=json.load(f)
-    #course1=Course.objects.create(name=data['name'])
-    course1=client.post('/api/v1/courses/', {'name': data['name']})
-    for d in data['students']:
-        course1.students.create(name=d['name'], birth_date=d['birth_date'])
+    course1=client.post('/api/v1/courses/', {'name': data['name'], 'students': data['students']})
     response= client.get('/api/v1/courses/')
     data1=response.json()
     assert response.status_code == 200
@@ -79,30 +86,26 @@ def test_create_course(client, course_factory, student_factory):
 #тест успешного обновления курса
 @pytest.mark.django_db
 def test_update_course(client, course_factory, student_factory):
-    courses=course_factory(_quantity=1)
-    students=student_factory(_quantity=3)
+    courses = course_factory(_quantity=5, make_m2m=True)
+    course_id = courses[0].id
+    students = student_factory(_quantity=10, make_m2m=True)
     with open('data.json', encoding="utf-8") as f:
         data=json.load(f)
-    course1 = Course.objects.filter(id=1).update(name=data['name'])
-    for d in data['students']:
-        course1.students.all().update(name=d['name'], birth_date=d['birth_date'])
-    response = client.get('/api/v1/courses/')
+    course1 = client.patch('/api/v1/courses/', {'id': course_id, 'name': data['name'], 'students': data['students']})
+    response = client.get('/api/v1/courses/', {'id': course_id})
     data1 = response.json()
     assert response.status_code == 200
-    assert data1[0]['name'] == course1.name
+    assert data1[0]['name'] == data['name']
 
 #тест успешного удаления курса.
 @pytest.mark.django_db
-def test_remove_course(client):
-    with open('data.json', encoding="utf-8") as f:
-        data=json.load(f)
-    course1=Course.objects.create(name=data['name'])
-    for d in data['students']:
-        course1.students.create(name=d['name'], birth_date=d['birth_date'])
-    course1.students.clear()
-    Student.objects.all().delete()
-    Course.objects.all().delete()
+def test_remove_course(client, course_factory, student_factory):
+    courses = course_factory(_quantity=2, make_m2m=True)
+    course_id = courses[0].id
+    students = student_factory(_quantity=5, make_m2m=True)
+    course1 = client.delete('/api/v1/courses/', {'id': course_id})
     response = client.get('/api/v1/courses/')
     data1 = response.json()
     assert response.status_code == 200
-    assert len(data1)==0
+    assert len(data1)==len(courses)-1
+
