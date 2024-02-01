@@ -8,7 +8,8 @@ class Student(models.Model):
     birth_date = models.DateField(
         null=True,
     )
-
+    def __str__(self):
+        return F"{self.name}, {self.birth_date}"
 
 class Course(models.Model):
 
@@ -18,3 +19,5 @@ class Course(models.Model):
         Student,
         blank=True,
     )
+    def __str__(self):
+        return F"{self.name}: {self.students.name}, {Student.birth_date}"
