@@ -81,27 +81,27 @@ def test_filter_name_courses(client, course_factory, student_factory):
     assert response.status_code == 200
     assert data[0]['name']==cour1[0]['name']
 # #
-# #ТЕСТ УСПЕШНОГО СОЗДАНИЯ курса
-# @pytest.mark.django_db
-# def test_create_course(client):
-#     with open('data.json', encoding="utf-8") as f:
-#         data=json.load(f)
-#     print(data)
-#     # course1=client.post('/api/v1/courses/', {'name': data['name'], 'students': data['students']}, format='json')
-#     # course1 = client.post('/api/v1/courses/', {'name': data['name']}, format='json')
-#     course1 = client.post('/api/v1/courses/', {'name': data['name']}, format='json')
-#     response2= client.get('/api/v1/courses/')
-#     d2=response2.json()
-#     print(d2)
-#     course_id=d2[0]['id']
-#     for st in data['students']:
-#         st1 = client.post(F'/api/v1/courses/{course_id}/', {'students': [{'name': st['name'], 'birth_date': st['birth_date']}] }, format='json')
-#     response = client.get('/api/v1/courses/')
-#     data1=response.json()
-#     print(data1)
-#     assert response.status_code == 200
-#     #assert data1[0]['name']==course1[0].name
-#     assert len(data1) == 1
+#ТЕСТ УСПЕШНОГО СОЗДАНИЯ курса
+@pytest.mark.django_db
+def test_create_course(client):
+    with open('data.json', encoding="utf-8") as f:
+        data=json.load(f)
+    print(data)
+    # course1=client.post('/api/v1/courses/', {'name': data['name'], 'students': data['students']}, format='json')
+    # course1 = client.post('/api/v1/courses/', {'name': data['name']}, format='json')
+    course1 = client.post('/api/v1/courses/', {'name': data['name']}, format='json')
+    response2= client.get('/api/v1/courses/')
+    d2=response2.json()
+    print(d2)
+    course_id=d2[0]['id']
+    for st in data['students']:
+        st1 = client.post(F'/api/v1/courses/{course_id}/', {'students': [{'name': st['name'], 'birth_date': st['birth_date']}] }, format='json')
+    response = client.get('/api/v1/courses/')
+    data1=response.json()
+    print(data1)
+    assert response.status_code == 200
+    #assert data1[0]['name']==course1[0].name
+    assert len(data1) == 1
 # #
 #тест успешного обновления курса
 @pytest.mark.django_db
@@ -109,27 +109,25 @@ def test_update_course(client, course_factory, student_factory):
     students = student_factory(_quantity=3, make_m2m=True)
     courses=course_factory(_quantity=3, students=students, make_m2m=True)
     course_id = courses[0].id
-    students_ids = [st.id for st in students]
     with open('data.json', encoding="utf-8") as f:
         data=json.load(f)
-    # course1 = client.patch('/api/v1/courses/', {'id': course_id, 'name': data['name'], 'students': data['students']})
-    # course1 = client.patch('/api/v1/courses/', {'id': course_id, 'name': data['name']})
-    course1 = client.patch(F'/api/v1/courses/{course_id}/', data={'name': data['name'], 'students': students_ids})
+    print(data)
+    course1 = client.patch(F'/api/v1/courses/{course_id}/', data={'name': data['name']})
     response = client.get(F'/api/v1/courses/{course_id}/')
     data1 = response.json()
     print(data1)
-    assert response.status_code == 300
+    assert response.status_code == 200
     assert data1['name'] == data['name']
 # # #
-# #тест успешного удаления курса.
-# @pytest.mark.django_db
-# def test_remove_course(client, course_factory, student_factory):
-#     students = student_factory(_quantity=3, make_m2m=True)
-#     courses=course_factory(_quantity=3, students=students, make_m2m=True)
-#     course_id = courses[0].id
-#     course1 = client.delete(F'/api/v1/courses/{course_id}/')
-#     response = client.get('/api/v1/courses/')
-#     data1 = response.json()
-#     assert response.status_code == 200
-#     assert len(data1)==len(courses)-1
+#тест успешного удаления курса.
+@pytest.mark.django_db
+def test_remove_course(client, course_factory, student_factory):
+    students = student_factory(_quantity=3, make_m2m=True)
+    courses=course_factory(_quantity=3, students=students, make_m2m=True)
+    course_id = courses[0].id
+    course1 = client.delete(F'/api/v1/courses/{course_id}/')
+    response = client.get('/api/v1/courses/')
+    data1 = response.json()
+    assert response.status_code == 200
+    assert len(data1)==len(courses)-1
 # #
